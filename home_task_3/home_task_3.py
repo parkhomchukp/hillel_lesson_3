@@ -1,7 +1,7 @@
 import random
 import string
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from webargs.flaskparser import use_kwargs
 from data_validation import password_args, bitcoin_rate_args
 
@@ -40,6 +40,8 @@ def generate_password(length, specials, digits):
 def get_bitcoin_rate(currency):
     url = 'https://bitpay.com/api/rates'
     res = requests.get(url)
+    if res.status_code != 200:
+        return Response('ERROR: something went wrong', status=res.status_code)
     result = res.json()
     value = None
     for item in result:
