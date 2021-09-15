@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import random
 import string
+import requests
 from marshmallow import validate
 from webargs import fields
 from webargs.flaskparser import use_kwargs
@@ -40,6 +41,17 @@ def generate_password(length):
             k=length
         )
     )
+
+
+@app.route("/who-is-on-duty")
+def get_astronauts():
+    url = 'http://api.open-notify.org/astros.json'
+    res = requests.get(url)
+    result = res.json()
+    stats = {}
+    for entry in result['people']:
+        stats[entry['craft']] = stats.get(entry['craft'], 0) + 1
+    return stats
 
 
 app.run(debug=True)
