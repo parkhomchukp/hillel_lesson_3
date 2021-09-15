@@ -1,8 +1,9 @@
 import random
 import string
+import requests
 from flask import Flask, request, jsonify
 from webargs.flaskparser import use_kwargs
-from data_validation import password_args
+from data_validation import password_args, bitcoin_rate_args
 
 app = Flask(__name__)
 
@@ -32,6 +33,19 @@ def generate_password(length, specials, digits):
             k=length
         )
     )
+
+
+@app.route('/bitcoin_rate')
+@use_kwargs(bitcoin_rate_args, location="query")
+def get_bitcoin_rate(currency):
+    url = 'https://bitpay.com/api/rates'
+    res = requests.get(url)
+    result = res.json()
+    value = None
+    for item in result:
+        if item['code'] == currency:
+            value = item['rate']
+    return str(value)
 
 
 app.run(debug=True)
