@@ -47,6 +47,7 @@ def get_bitcoin_rate(currency):
     for item in result:
         if item['code'] == currency:
             value = item['rate']
+            break
     return str(value)
 
 
