@@ -27,13 +27,13 @@ def generate_password(length, specials, digits):
         characters += string.punctuation
     if digits == 1:
         characters += string.digits
-    result = ''.join(
+    password = ''.join(
         random.choices(
             characters,
             k=length
         )
     )
-    return render_template('index.html', result=result)
+    return render_template('index.html', result=password)
 
 
 @app.route('/bitcoin_rate')
