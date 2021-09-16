@@ -1,7 +1,7 @@
 import random
 import string
 import requests
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, render_template
 from webargs.flaskparser import use_kwargs
 from data_validation import password_args, bitcoin_rate_args
 
@@ -24,15 +24,16 @@ def handle_error(err):
 def generate_password(length, specials, digits):
     characters = string.ascii_lowercase + string.ascii_uppercase
     if specials == 1:
-        characters += '''!"№;%:?*$()_+'''
+        characters += string.punctuation
     if digits == 1:
         characters += string.digits
-    return ''.join(
+    result = ''.join(
         random.choices(
             characters,
             k=length
         )
     )
+    return render_template('index.html', result=result)
 
 
 @app.route('/bitcoin_rate')
@@ -48,7 +49,7 @@ def get_bitcoin_rate(currency):
         if item['code'] == currency:
             value = item['rate']
             break
-    return str(value)
+    return render_template('index.html', result=str(value))
 
 
 app.run(debug=True)
